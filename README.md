@@ -1,8 +1,7 @@
-# Week-2-VSD
+# Week-2-VSD: BabySoC Fundamentals & Functional Modelling 
 <details>
   <summary>Part 1 – Theory (Conceptual Understanding)</summary>
-# Understanding System-on-Chip (SoC) and BabySoC
-
+  
 ## What is a System-on-Chip (SoC)?
 
 A **System-on-a-Chip (SoC)** is essentially a complete computing system built on a single chip. Instead of requiring separate hardware units for the CPU, memory, input/output, and specialized functions, an SoC integrates them all together.  
