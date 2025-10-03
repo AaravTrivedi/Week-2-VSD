@@ -1,4 +1,6 @@
 # Week-2-VSD
+<details>
+  <summary>Part 1 – Theory (Conceptual Understanding)</summary>
 # Understanding System-on-Chip (SoC) and BabySoC
 
 ## What is a System-on-Chip (SoC)?
@@ -88,5 +90,4 @@ Designing a real SoC goes through multiple stages:
 - Functional modeling with BabySoC equips learners to transition smoothly toward RTL and physical design in real-world SoC development.
 
 ---
-
-✨ With BabySoC, you’re not just learning about SoCs—you’re experiencing the first building blocks of modern chip design!
+</details>
