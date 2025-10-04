@@ -90,3 +90,67 @@ Designing a real SoC goes through multiple stages:
 
 ---
 </details>
+<details>
+  <summary>Part 2 – Labs (Hands-on Functional Modelling) </summary>
+  
+## Overview
+BabySoC is a minimal System‑on‑Chip (SoC) integration project combining the **RVMYTH RISC‑V core**, **PLL**, and **DAC** modules. The objective is to simulate the SoC behavior before synthesis and visualize signal interactions using GTKWave.
+
+This guide explains how to clone the repository, run the pre‑synthesis simulation, and analyze the resulting waveform.
+
+---
+
+## Repository Setup
+
+### Clone the Repository
+```bash
+git clone https://github.com/manili/VSDBabySoC.git
+```
+### Run Pre‑Synthesis Simulation
+```bash
+cd VSDBabySoC
+make pre_synth_sim
+```
+This command compiles and simulates the design, generating the waveform file:
+```bash
+output/pre_synth_sim/pre_synth_sim.vcd
+```
+### View the Waveform
+Open the VCD file in GTKWave:
+```bash
+gtkwave output/pre_synth_sim/pre_synth_sim.vcd
+```
+
+---
+
+## Waveform Analysis
+
+### 1. Reset Operation
+<img width="640" height="511" alt="Screenshot from 2025-10-04 10-06-32" src="https://github.com/user-attachments/assets/4a678872-257b-47b5-8ed3-cf5240bb9c9f" />
+
+At the beginning of the simulation, the **reset** signal is asserted (`1`), forcing all registers and internal states to their initial conditions. When reset is **deasserted** (`0`), the system transitions to normal operation, confirming that initialization works correctly.
+
+### 2. Clocking
+<img width="1170" height="394" alt="Screenshot from 2025-10-04 10-21-58" src="https://github.com/user-attachments/assets/b0f7a8ff-721e-424b-88eb-8ce828e5b2f7" />
+
+`CLK`(highlighted in yellow) is the input clock signal of the **RVMYTH core**. This signal is derived from the output of the PLL. The CLK waveform shows a periodic square wave driving all synchronous elements of the BabySoC. Each rising edge triggers state transitions inside flip-flops and sequential logic.
+
+### 3. Dataflow Between Modules
+<img width="1546" height="431" alt="Screenshot from 2025-10-04 11-05-54" src="https://github.com/user-attachments/assets/3833ffc7-24a9-4246-878e-af7d73095db7" />
+
+- **CLK** is the **PLL output** that drives the **RVMYTH core**.  
+- **OUT[9:0]** is the core’s **10‑bit bus** feeding the **DAC** as **D[9:0]**.  
+- The **first OUT trace (blue)** represents the **DAC’s internal analog output**.  
+- The **second OUT trace (yellow)** corresponds to the **top‑level SoC output**.  
+- The **top‑level SoC OUT** is **digital** in this simulation and can take only **two values**, so it appears as a **1‑bit step** instead of a continuous analog level.
+
+After reset deasserts, a change on **OUT[9:0]** is followed on subsequent clock cycles by an update on **dac.OUT**, and then a corresponding change on the **top‑level OUT**, demonstrating **producer‑to‑consumer propagation** under the **PLL‑generated clock**.  
+This confirms the intended **CPU→DAC dataflow**: the **RVMYTH executes instructions**, updates a register driving **OUT[9:0]**, the **DAC converts** this to an **analog‑modeled level**, and the **SoC boundary reflects it**.  
+
+**Example:**  
+In the above example, the core outputs `0x011` (17 in decimal). The **10‑bit DAC** interprets this as a normalized level of `17/1023 ≈ 0.0166`, producing a **small analog step** at its output. However, the **top‑level SoC output** is a **digital signal** that can take only two values, so it reads this low‑level result as `0`.
+
+
+---
+
+</details>
